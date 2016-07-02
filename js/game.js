@@ -29,7 +29,11 @@ cherryImage.onload = function(){
 }
 cherryImage.src = "images/cherries.png";
 
-var numberOfCherries = 4;
+var randomInt = function(min, max){
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var numberOfCherries = randomInt(2, 6);
 var cherries = new Array(numberOfCherries);
 for(i = 0; i < numberOfCherries; i++)
 	cherries[i] = true;
@@ -66,10 +70,6 @@ var collide = function(x1, y1, x2, y2, size){
 	return ((x1 <= (x2 + size)) && (x2 <= (x1 + size)) && (y1 <= (y2 + size)) && (y2 <= (y1 + size)));
 };
 
-var randomInt = function(min, max){
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 var randomizeCherry = function(){
 	for(i = 0; i < numberOfCherries; i++){
 		cherriesX[i] = randomInt(32, 416);
@@ -81,8 +81,8 @@ var randomizeCherry = function(){
 var reset = function(){
 	hero.x = canvas.width / 2 - hero.size / 2;
 	hero.y = canvas.height / 2 - hero.size / 2;
-	monster.x = 150;
-	monster.y = 150;
+	monster.x = randomInt(32, 416);
+	monster.y = randomInt(32, 384);
 	hero.health = hero.maxHealth;
 	for(i = 0; i < numberOfCherries; i++)
 		cherries[i] = true;
@@ -117,6 +117,16 @@ var update = function(modifier){
 	if(collide(monster.x, monster.y, hero.x, hero.y, hero.size))
 		hero.health -= parseInt(100 * modifier);
 
+	for(i = 0; i < numberOfCherries; i++)
+		if(collide(hero.x, hero.y, cherriesX[i], cherriesY[i], cherry.size))
+			cherries[i] = false;
+
+	var outOfCherries = true;
+	for(i = 0; i < numberOfCherries; i++)
+		if(cherries[i])
+			outOfCherries = false;
+	if(outOfCherries)
+		reset();
 };
 
 var render = function(){
@@ -126,7 +136,8 @@ var render = function(){
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	if(cherryReady){
 		for(i = 0; i < numberOfCherries; i++)
-			ctx.drawImage(cherryImage, cherriesX[i], cherriesY[i]);
+			if(cherries[i])
+				ctx.drawImage(cherryImage, cherriesX[i], cherriesY[i]);
 	}
 	if(heroReady)
 		ctx.drawImage(heroImage, hero.x, hero.y);
