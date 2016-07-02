@@ -54,14 +54,18 @@ var reset = function(){
 };
 
 var update = function(modifier){
-	if(38 in keysDown)
-		hero.y -= hero.speed * modifier;
-	if(40 in keysDown)
-		hero.y += hero.speed * modifier;
-	if(37 in keysDown)
-		hero.x -= hero.speed * modifier;
-	if(39 in keysDown)
-		hero.x += hero.speed * modifier;
+	if(38 in keysDown) //UP
+		if(hero.y > 32)
+			hero.y -= hero.speed * modifier;
+	if(40 in keysDown) //DOWN
+		if(hero.y < 416)
+			hero.y += hero.speed * modifier;
+	if(37 in keysDown) //LEFT
+		if(hero.x > 32)
+			hero.x -= hero.speed * modifier;
+	if(39 in keysDown) //RIGHT
+		if(hero.x < 448)
+			hero.x += hero.speed * modifier;
 
 	if(monster.x > hero.x)
 		monster.x -= monster.speed * modifier;
@@ -89,7 +93,7 @@ var render = function(){
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-	ctx.fillText("Health" + hero.health, 32, 32);
+	ctx.fillText("Health: " + hero.health, 32, 32);
 };
 
 var main = function(){
