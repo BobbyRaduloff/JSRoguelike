@@ -30,7 +30,11 @@ cherryImage.onload = function(){
 cherryImage.src = "images/cherries.png";
 
 var numberOfCherries = 4;
-var cherries = [true, true, true, true];
+var cherries = new Array(numberOfCherries);
+for(i = 0; i < numberOfCherries; i++)
+	cherries[i] = true;
+var cherriesX = new Array(numberOfCherries);
+var cherriesY = new Array(numberOfCherries);
 
 var hero = {
 	speed: 256,
@@ -62,6 +66,17 @@ var collide = function(x1, y1, x2, y2, size){
 	return ((x1 <= (x2 + size)) && (x2 <= (x1 + size)) && (y1 <= (y2 + size)) && (y2 <= (y1 + size)));
 };
 
+var randomInt = function(min, max){
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var randomizeCherry = function(){
+	for(i = 0; i < numberOfCherries; i++){
+		cherriesX[i] = randomInt(32, 416);
+		cherriesY[i] = randomInt(32, 384);
+	}
+
+};
 
 var reset = function(){
 	hero.x = canvas.width / 2 - hero.size / 2;
@@ -69,8 +84,9 @@ var reset = function(){
 	monster.x = 150;
 	monster.y = 150;
 	hero.health = hero.maxHealth;
-	for(i = 0; i < 4; i++)
+	for(i = 0; i < numberOfCherries; i++)
 		cherries[i] = true;
+	randomizeCherry();
 };
 
 var update = function(modifier){
@@ -100,14 +116,6 @@ var update = function(modifier){
 	
 	if(collide(monster.x, monster.y, hero.x, hero.y, hero.size))
 		hero.health -= parseInt(100 * modifier);
-	if(cherries[0] && collide(hero.x, hero.y, 32, 32, cherry.size))
-		cherries[0] = false;
-	if(cherries[1] && collide(hero.x, hero.y, 448, 32, cherry.size))
-		cherries[1] = false;
-	if(cherries[2] && collide(hero.x, hero.y, 32, 416, cherry.size))
-		cherry[2] = false;
-	if(cherries[3] && collide(hero.x, hero.y, 448, 414, cherry.size))
-		cherry[3] = false;
 
 };
 
@@ -117,17 +125,12 @@ var render = function(){
 	if(monsterReady)
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	if(cherryReady){
-			if(cherries[0])
-				ctx.drawImage(cherryImage, 32, 32);
-			if(cherries[1])
-				ctx.drawImage(cherryImage, 448, 32);
-			if(cherries[2])
-				ctx.drawImage(cherryImage, 32, 416);
-			if(cherries[3])
-				ctx.drawImage(cherryImage, 448, 414)
+		for(i = 0; i < numberOfCherries; i++)
+			ctx.drawImage(cherryImage, cherriesX[i], cherriesY[i]);
 	}
 	if(heroReady)
 		ctx.drawImage(heroImage, hero.x, hero.y);
+
 	ctx.fillStyle = "rgb(215, 0, 0)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
@@ -142,13 +145,6 @@ var main = function(){
 	update(delta / 1000);
 	
 	if(hero.health <= 0)
-		reset();
-	
-	var noExistingCherries = false;
-	for(i = 0; i < 4; i++)
-		if(cherries[i])
-			noExistingCherries = true;
-	if(!noExistingCherries)
 		reset();
 
 	render();
