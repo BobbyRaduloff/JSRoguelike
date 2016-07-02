@@ -65,10 +65,13 @@ var update = function(modifier){
 		monster.x -= monster.speed * modifier;
 	else if(monster.x < hero.x)
 		monster.x += monster.speed * modifier;
+	else if(monster.x == hero.x){}
+
 	if(monster.y > hero.y)
 		monster.y -= monster.speed * modifier;
 	else if(monster.y < hero.y)
 		monster.y += monster.speed * modifier;
+	else if(monster.y == hero.y){}
 };
 
 var render = function(){
