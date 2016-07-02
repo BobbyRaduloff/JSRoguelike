@@ -26,7 +26,9 @@ monsterImage.onload = function(){
 monsterImage.src = "images/monster.png";
 
 var hero = {
-	speed: 256
+	speed: 256,
+	maxHealth: 100,
+	health: 100
 };
 
 var monster = {
@@ -46,9 +48,9 @@ addEventListener("keyup", function(e){
 var reset = function(){
 	hero.x = canvas.width / 2 - heroImage.width / 2;
 	hero.y = canvas.height / 2 - heroImage.height / 2;
-
 	monster.x = 150;
 	monster.y = 150;
+	hero.health = hero.maxHealth;
 };
 
 var update = function(modifier){
@@ -65,13 +67,14 @@ var update = function(modifier){
 		monster.x -= monster.speed * modifier;
 	else if(monster.x < hero.x)
 		monster.x += monster.speed * modifier;
-	else if(monster.x == hero.x){}
 
 	if(monster.y > hero.y)
 		monster.y -= monster.speed * modifier;
 	else if(monster.y < hero.y)
 		monster.y += monster.speed * modifier;
-	else if(monster.y == hero.y){}
+
+	if((monster.x >= hero.x && monster.x <= hero.x + heroImage.width) && (monster.y >= hero.y && monster.y <= hero.y + heroImage.height))
+		hero.health -= parseInt(100 * modifier);
 };
 
 var render = function(){
@@ -81,6 +84,12 @@ var render = function(){
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	if(heroReady)
 		ctx.drawImage(heroImage, hero.x, hero.y);
+
+	ctx.fillStyle = "rgb(215, 0, 0)";
+	ctx.font = "24px Helvetica";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText("Health" + hero.health, 32, 32);
 };
 
 var main = function(){
@@ -88,10 +97,11 @@ var main = function(){
 	var delta = now - then;
 
 	update(delta / 1000);
+	if(hero.health <= 0)
+		reset();
 	render();
 
 	then = now;
-
 	requestAnimationFrame(main);
 };
 
