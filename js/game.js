@@ -34,7 +34,7 @@ var randomInt = function(min, max){
 }
 
 var numberOfCherries = randomInt(2, 6);
-var cherries = new Array(numberOfCherries);
+var cherries = new Array(10);
 for(i = 0; i < numberOfCherries; i++)
 	cherries[i] = true;
 var cherriesX = new Array(numberOfCherries);
@@ -86,6 +86,7 @@ var reset = function(){
 	hero.health = hero.maxHealth;
 	for(i = 0; i < numberOfCherries; i++)
 		cherries[i] = true;
+	numberOfCherries = randomInt(2, 6);
 	randomizeCherry();
 };
 
