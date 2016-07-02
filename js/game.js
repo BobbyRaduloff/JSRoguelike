@@ -33,8 +33,10 @@ var randomInt = function(min, max){
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+var increase = 12;
+
 var numberOfCherries = randomInt(2, 6);
-var cherries = new Array(10);
+var cherries = new Array(7);
 for(i = 0; i < numberOfCherries; i++)
 	cherries[i] = true;
 var cherriesX = new Array(numberOfCherries);
@@ -48,7 +50,7 @@ var hero = {
 };
 
 var monster = {
-	speed: 156,
+	speed: 150,
 	size: 32
 };
 
@@ -126,20 +128,26 @@ var update = function(modifier){
 	for(i = 0; i < numberOfCherries; i++)
 		if(cherries[i])
 			outOfCherries = false;
-	if(outOfCherries)
+	if(outOfCherries){
+		if(increase > 0){
+			monster.speed += increase;
+			increase--;
+		}
 		reset();
+	}
 };
 
 var render = function(){
 	if(bgReady)
 		ctx.drawImage(bgImage, 0, 0);
-	if(monsterReady)
-		ctx.drawImage(monsterImage, monster.x, monster.y);
 	if(cherryReady){
 		for(i = 0; i < numberOfCherries; i++)
 			if(cherries[i])
 				ctx.drawImage(cherryImage, cherriesX[i], cherriesY[i]);
 	}
+	if(monsterReady)
+		ctx.drawImage(monsterImage, monster.x, monster.y);
+
 	if(heroReady)
 		ctx.drawImage(heroImage, hero.x, hero.y);
 
@@ -156,8 +164,10 @@ var main = function(){
 
 	update(delta / 1000);
 	
-	if(hero.health <= 0)
+	if(hero.health <= 0){
+		alert("YOU DIED");
 		reset();
+	}
 
 	render();
 
